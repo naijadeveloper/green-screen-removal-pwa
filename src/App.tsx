@@ -56,7 +56,7 @@ export default function App() {
   return (
     <>
       <Header pathname="home" />
-      <main className="relative h-0 grow-[1] w-[98%] sm:w-[95%] mx-auto bg-zinc-800 rounded-lg text-zinc-200 overflow-auto flex flex-col gap-y-5 items-center justify-center">
+      <main className="relative h-0 grow-[1] w-[98%] sm:w-[95%] mx-auto bg-neutral-700 rounded-lg text-neutral-200 overflow-auto flex flex-col gap-y-5 items-center justify-center">
         <div className="w-full max-w-sm px-2">
           <div className="mb-2 flex justify-between items-center">
             <span className="text-sm font-medium">
@@ -71,12 +71,15 @@ export default function App() {
                 type="file"
                 className="hidden"
               />
-              <div className="border border-e-0 text-zinc-400 text-sm w-full p-2.5 bg-zinc-900 border-zinc-600 flex flex-nowrap items-center gap-2 rounded-s-lg">
+              <div className="border border-e-0 text-neutral-400 text-sm w-full p-2.5 bg-neutral-900 border-neutral-600 flex flex-nowrap items-center gap-2 rounded-s-lg">
                 <span>
                   <FaVideo />
                 </span>
 
-                <span title={bgVideo?.name ?? "e.g beautiful-bg-scenery.mp4"}>
+                <span
+                  className="font-medium"
+                  title={bgVideo?.name ?? "e.g beautiful-bg-scenery.mp4"}
+                >
                   {bgVideo
                     ? bgVideo.name.length > 25
                       ? `${bgVideo.name.slice(0, 15)}...${bgVideo.name.slice(
@@ -90,7 +93,7 @@ export default function App() {
 
             <label
               htmlFor="bg-video-file"
-              className="flex-shrink-0 z-10 inline-flex items-center py-3 px-4 text-sm font-medium text-center rounded-e-lg bg-[#9F8C76]/80 hover:bg-[#9F8C76] border border-[#9F8C76]/70 cursor-pointer"
+              className="flex-shrink-0 z-10 inline-flex items-center py-3 px-4 text-sm font-medium text-center rounded-e-lg bg-[#9F8C76]/70 hover:bg-[#9F8C76]/90 border border-[#9F8C76]/70 cursor-pointer"
             >
               <span className="w-4 h-4 text-xl flex items-center justify-center">
                 <FaFileVideo />
@@ -99,7 +102,7 @@ export default function App() {
           </div>
           <p
             className={`mt-2 text-sm text-red-300 font-semibold ${
-              !bgInputError && "text-zinc-400"
+              !bgInputError && "text-neutral-400 font-medium"
             }`}
           >
             {bgInputError
@@ -125,13 +128,15 @@ export default function App() {
                 type="file"
                 className="hidden"
               />
-              <div className="border border-e-0 text-zinc-400 text-sm w-full p-2.5 bg-zinc-900 border-zinc-600 flex flex-nowrap items-center gap-2 rounded-s-lg">
+              <div className="border border-e-0 text-neutral-400 text-sm w-full p-2.5 bg-neutral-900 border-neutral-600 flex flex-nowrap items-center gap-2 rounded-s-lg">
                 <span className={`visible ${!greenSVideo && "invisible"}`}>
                   <FaVideo />
                 </span>
 
                 <span
-                  className={`visible ${!greenSVideo && "invisible"}`}
+                  className={`visible font-medium ${
+                    !greenSVideo && "invisible"
+                  }`}
                   title={greenSVideo?.name ?? "e.g green-screen-video.mp4"}
                 >
                   {greenSVideo
@@ -148,7 +153,7 @@ export default function App() {
 
             <label
               htmlFor="gsvideo-file"
-              className="flex-shrink-0 z-10 inline-flex items-center py-3 px-4 text-sm font-medium text-center rounded-e-lg bg-[#9F8C76]/80 hover:bg-[#9F8C76] border border-[#9F8C76]/70 cursor-pointer"
+              className="flex-shrink-0 z-10 inline-flex items-center py-3 px-4 text-sm font-medium text-center rounded-e-lg bg-[#9F8C76]/70 hover:bg-[#9F8C76]/90 border border-[#9F8C76]/70 cursor-pointer"
             >
               <span className="w-4 h-4 text-xl flex items-center justify-center">
                 <FaFileVideo />
@@ -165,14 +170,14 @@ export default function App() {
         </div>
         {/* ....................................................................... */}
 
-        <button className="w-[200px] h-[50px] relative -top-1 bg-[#9F8C76]/80 inline-flex items-center justify-center px-4 py-2 gap-2 rounded-lg border-b-4 border-zinc-900 hover:border-b-0 hover:bg-[#9F8C76]  hover:top-0">
+        <button className="w-[200px] h-[50px] relative -top-1 bg-[#9F8C76]/70 inline-flex items-center justify-center px-4 py-2 gap-2 rounded-lg border-b-4 border-neutral-900 hover:border-b-0 hover:bg-[#9F8C76]/90  hover:top-0">
           <span className={`${isCamera ? "inline-block" : "hidden"}`}>
             <FaCameraRetro />
           </span>
           <span
             className={`${
               isCamera ? "hidden" : "inline-block"
-            } bg-zinc-700 px-1 rounded-md`}
+            } bg-neutral-700 px-1 rounded-md`}
           >
             <FcNoVideo />
           </span>
@@ -183,7 +188,7 @@ export default function App() {
 
         <label
           htmlFor="checkbox"
-          className="absolute bottom-4 flex gap-x-2 mx-4 px-4 sm:items-center bg-zinc-700 py-1 pt-[6px] rounded-lg border-b-4 border-zinc-900 cursor-pointer"
+          className="absolute bottom-4 flex gap-x-2 mx-4 px-4 sm:items-center bg-neutral-800 py-1 pt-[6px] rounded-lg border-b-4 border-neutral-900 cursor-pointer"
         >
           <input
             onChange={() => {
@@ -192,10 +197,10 @@ export default function App() {
             checked={isCamera ? false : true}
             id="checkbox"
             type="checkbox"
-            className="peer relative appearance-none w-6 h-6 max-sm:mt-1 bg-zinc-800 border border-zinc-600 rounded-md shrink-0 checked:bg-[#9F8C76]/80 checked:border-0 outline-none focus:outline-none"
+            className="peer relative appearance-none w-6 h-6 max-sm:mt-1 bg-neutral-800 border border-neutral-600 rounded-md shrink-0 checked:bg-[#9F8C76]/80 checked:border-0 outline-none focus:outline-none"
           />
 
-          <span className="text-base font-medium text-zinc-300">
+          <span className="text-base font-medium text-neutral-300">
             {isCamera
               ? "Check this, if instead, you would like to upload a video with a green screen, for removal"
               : "Uncheck this, if you want to use the camera for real-time 'green screen' removal"}
