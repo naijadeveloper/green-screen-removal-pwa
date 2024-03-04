@@ -1,18 +1,23 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import Header from "./components/header";
 
 import { FaVideo } from "react-icons/fa6";
 import { FaFileVideo } from "react-icons/fa6";
-import { FaCameraRetro } from "react-icons/fa";
+import { FaCameraRetro, FaCheckCircle } from "react-icons/fa";
 import { FcNoVideo } from "react-icons/fc";
 
 import { useAppStore } from "./zustland/store";
+
+import { cn } from "./lib/utils";
 
 export default function App() {
   //input errors i.e the file selected isn't a video
   const [bgInputError, setBgInputError] = useState(false);
   const [gSInputError, setGSInputError] = useState(false);
+  // references to the inputs used
+  const bgInput = useRef<HTMLInputElement>(null);
+  const gSInput = useRef<HTMLInputElement>(null);
   // states
   const isCamera = useAppStore((state) => state.isCamera);
   const bgVideo = useAppStore((state) => state.bgVideo);
@@ -26,11 +31,6 @@ export default function App() {
     vid: File | null,
     forWhichInput: "bg" | "greenS"
   ) {
-    // if video is null
-    if (!vid) {
-      return;
-    }
-
     if (vid?.type.toLowerCase().includes("video")) {
       if (forWhichInput == "bg") {
         setBgVideo(vid);
@@ -52,6 +52,31 @@ export default function App() {
         }, 5000);
       }
     }
+
+    //remove file
+    if (forWhichInput == "bg") {
+      bgInput.current!.value = "";
+    } else {
+      gSInput.current!.value = "";
+    }
+  }
+
+  function handleButtonClick() {
+    if (!bgVideo) {
+      setBgInputError(true);
+      setTimeout(() => {
+        setBgInputError(false);
+      }, 5000);
+      return;
+    }
+
+    if (!greenSVideo && isCamera == false) {
+      setGSInputError(true);
+      setTimeout(() => {
+        setGSInputError(false);
+      }, 5000);
+      return;
+    }
   }
   return (
     <>
@@ -66,20 +91,21 @@ export default function App() {
           <div className="flex items-center">
             <div className="relative w-full">
               <input
+                ref={bgInput}
                 onChange={(e) => handleVideoSetting(e.target.files![0], "bg")}
                 id="bg-video-file"
                 type="file"
                 className="hidden"
               />
-              <div className="border border-e-0 text-neutral-400 text-sm w-full p-2.5 bg-neutral-900 border-neutral-600 flex flex-nowrap items-center gap-2 rounded-s-lg">
+              <div
+                title={bgVideo?.name ?? "e.g beautiful-bg-scenery.mp4"}
+                className="relative border border-e-0 text-neutral-400 text-sm w-full p-2.5 bg-neutral-900 border-neutral-600 flex flex-nowrap items-center gap-2 rounded-s-lg"
+              >
                 <span>
                   <FaVideo />
                 </span>
 
-                <span
-                  className="font-medium"
-                  title={bgVideo?.name ?? "e.g beautiful-bg-scenery.mp4"}
-                >
+                <span className="font-medium">
                   {bgVideo
                     ? bgVideo.name.length > 25
                       ? `${bgVideo.name.slice(0, 15)}...${bgVideo.name.slice(
@@ -88,6 +114,12 @@ export default function App() {
                       : `${bgVideo.name}`
                     : "e.g beautiful-bg-scenery.mp4"}
                 </span>
+
+                {bgVideo && (
+                  <span className="text-[#9F8C76] text-lg animate-pulse absolute right-2">
+                    <FaCheckCircle />
+                  </span>
+                )}
               </div>
             </div>
 
@@ -101,9 +133,9 @@ export default function App() {
             </label>
           </div>
           <p
-            className={`mt-2 text-sm text-red-300 font-semibold ${
-              !bgInputError && "text-neutral-400 font-medium"
-            }`}
+            className={cn("mt-2 text-sm text-neutral-400 font-medium", {
+              "text-red-300 font-semibold": bgInputError,
+            })}
           >
             {bgInputError
               ? "Please select a video file"
@@ -112,7 +144,7 @@ export default function App() {
         </div>
 
         {/* ....................................................................... */}
-        <div className={`block w-full max-w-sm px-2 ${isCamera && "hidden"}`}>
+        <div className={cn("block w-full max-w-sm px-2", { hidden: isCamera })}>
           <div className="mb-2 flex justify-between items-center">
             <span className="text-sm font-medium">
               Video with a green screen background <sup>(required)</sup>
@@ -121,6 +153,7 @@ export default function App() {
           <div className="flex items-center">
             <div className="relative w-full">
               <input
+                ref={gSInput}
                 onChange={(e) =>
                   handleVideoSetting(e.target.files![0], "greenS")
                 }
@@ -128,16 +161,18 @@ export default function App() {
                 type="file"
                 className="hidden"
               />
-              <div className="border border-e-0 text-neutral-400 text-sm w-full p-2.5 bg-neutral-900 border-neutral-600 flex flex-nowrap items-center gap-2 rounded-s-lg">
-                <span className={`visible ${!greenSVideo && "invisible"}`}>
+              <div
+                title={greenSVideo?.name ?? "e.g green-screen-video.mp4"}
+                className="border border-e-0 text-neutral-400 text-sm w-full p-2.5 bg-neutral-900 border-neutral-600 flex flex-nowrap items-center gap-2 rounded-s-lg"
+              >
+                <span className={cn("invisible", { visible: greenSVideo })}>
                   <FaVideo />
                 </span>
 
                 <span
-                  className={`visible font-medium ${
-                    !greenSVideo && "invisible"
-                  }`}
-                  title={greenSVideo?.name ?? "e.g green-screen-video.mp4"}
+                  className={cn("invisible font-medium", {
+                    visible: greenSVideo,
+                  })}
                 >
                   {greenSVideo
                     ? greenSVideo.name.length > 25
@@ -148,6 +183,12 @@ export default function App() {
                       : `${greenSVideo.name}`
                     : "e.g green-screen-video.mp4"}
                 </span>
+
+                {greenSVideo && (
+                  <span className="text-[#9F8C76] text-lg animate-pulse absolute right-2">
+                    <FaCheckCircle />
+                  </span>
+                )}
               </div>
             </div>
 
@@ -161,23 +202,26 @@ export default function App() {
             </label>
           </div>
           <p
-            className={`mt-2 text-sm block text-red-300 font-semibold ${
-              !gSInputError && "hidden"
-            }`}
+            className={cn("hidden mt-2 text-sm text-red-300 font-semibold", {
+              block: gSInputError,
+            })}
           >
             {gSInputError && "Please select a video file"}
           </p>
         </div>
         {/* ....................................................................... */}
 
-        <button className="w-[200px] h-[50px] relative -top-1 bg-[#9F8C76]/70 inline-flex items-center justify-center px-4 py-2 gap-2 rounded-lg border-b-4 border-neutral-900 hover:border-b-0 hover:bg-[#9F8C76]/90  hover:top-0">
-          <span className={`${isCamera ? "inline-block" : "hidden"}`}>
+        <button
+          onClick={() => handleButtonClick()}
+          className="w-[200px] h-[50px] relative -top-1 bg-[#9F8C76]/70 inline-flex items-center justify-center px-4 py-2 gap-2 rounded-lg border-b-4 border-neutral-900 hover:border-b-0 hover:bg-[#9F8C76]/90  hover:top-0"
+        >
+          <span className={cn("hidden", { "inline-block": isCamera })}>
             <FaCameraRetro />
           </span>
           <span
-            className={`${
-              isCamera ? "hidden" : "inline-block"
-            } bg-neutral-700 px-1 rounded-md`}
+            className={cn("inline-block bg-neutral-700 px-1 rounded-md", {
+              hidden: isCamera,
+            })}
           >
             <FcNoVideo />
           </span>
