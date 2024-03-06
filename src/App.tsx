@@ -1,5 +1,7 @@
 import { useState, useRef } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import Header from "./components/header";
 
 import { FaVideo } from "react-icons/fa6";
@@ -12,16 +14,22 @@ import { useAppStore } from "./zustland/store";
 import { cn } from "./lib/utils";
 
 export default function App() {
+  // navigation
+  const navigate = useNavigate();
+
   //input errors i.e the file selected isn't a video
   const [bgInputError, setBgInputError] = useState(false);
   const [gSInputError, setGSInputError] = useState(false);
+
   // references to the inputs used
   const bgInput = useRef<HTMLInputElement>(null);
   const gSInput = useRef<HTMLInputElement>(null);
+
   // states
   const isCamera = useAppStore((state) => state.isCamera);
   const bgVideo = useAppStore((state) => state.bgVideo);
   const greenSVideo = useAppStore((state) => state.greenSVideo);
+
   // actions
   const setIsCamera = useAppStore((state) => state.setIsCamera);
   const setBgVideo = useAppStore((state) => state.setBgVideo);
@@ -76,6 +84,18 @@ export default function App() {
         setGSInputError(false);
       }, 5000);
       return;
+    }
+
+    // if bgvideo and camera is true
+    // open "/camera"
+    if (bgVideo && isCamera == true) {
+      navigate("/camera");
+    }
+
+    // if isCamera is false and both bgVideo and greenSVideo are true
+    // open "/view-new-vid"
+    if (!isCamera && bgVideo && greenSVideo) {
+      navigate("/view-new-vid");
     }
   }
   return (

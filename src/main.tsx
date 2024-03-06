@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.tsx";
 import About from "./About.tsx";
+import ViewNewVideo from "./view_new_vid.tsx";
 import Error from "./Error.tsx";
 import "./index.css";
 
@@ -16,6 +17,12 @@ const router = createBrowserRouter([
   {
     path: "/about",
     element: <About />,
+    errorElement: <Error />,
+  },
+
+  {
+    path: "/view-new-vid",
+    element: <ViewNewVideo />,
     errorElement: <Error />,
   },
 ]);
