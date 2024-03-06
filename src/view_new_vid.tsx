@@ -47,7 +47,7 @@ export default function ViewNewVideo() {
     bgCanvas.setAttribute("height", String(height));
 
     // draw on canvas
-    let bgCtx = bgCanvas.getContext("2d");
+    let bgCtx = bgCanvas.getContext("2d", { willReadFrequently: true });
     bgVideoElem.current?.addEventListener("play", bgFrame);
 
     ///////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ export default function ViewNewVideo() {
     canvas.current!.setAttribute("height", String(height));
 
     // canvas context
-    let ctx = canvas.current?.getContext("2d");
+    let ctx = canvas.current?.getContext("2d", { willReadFrequently: true });
     gSVideoElem.current?.addEventListener("play", frame);
 
     // frame function to draw on canvas
@@ -112,7 +112,7 @@ export default function ViewNewVideo() {
         src=""
         autoPlay
         loop
-        className="absolute w-full h-full rounded-lg"
+        className="invisible absolute w-full h-full rounded-lg"
       />
 
       <canvas ref={canvas} className="absolute rounded-lg"></canvas>
