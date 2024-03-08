@@ -34,8 +34,9 @@ export default function ViewNewVideo() {
     gSVideoElem.current?.setAttribute("src", gSVideoUrl);
 
     // width and height for both bgVido and gSVideo
-    let width = gSVideoElem.current!.clientWidth;
-    let height = gSVideoElem.current!.clientHeight;
+    let width = gSVideoElem.current!.offsetWidth;
+    let height = gSVideoElem.current!.offsetHeight;
+    console.log(width, height);
 
     // new canvas
     const bgCanvas = document.createElement("canvas");
@@ -64,6 +65,12 @@ export default function ViewNewVideo() {
 
     // frame function to draw on canvas
     function frame() {
+      height =
+        (canvas.current?.width! / gSVideoElem.current?.videoWidth!) *
+        gSVideoElem.current?.videoHeight!;
+
+      canvas.current!.setAttribute("height", String(height));
+
       ctx?.drawImage(gSVideoElem.current!, 0, 0, width, height);
       // remove green screen and add bgVideo data
       let vidData = ctx?.getImageData(0, 0, width, height);
@@ -88,15 +95,22 @@ export default function ViewNewVideo() {
     }
 
     function bgFrame() {
+      bgCanvas.setAttribute("height", String(height));
+
       bgCtx?.drawImage(bgVideoElem.current!, 0, 0, width, height);
       requestAnimationFrame(bgFrame);
     }
+
+    return () => {
+      bgVideoElem.current?.removeEventListener("play", () => {});
+      gSVideoElem.current?.removeEventListener("play", () => {});
+    };
   });
 
   return (
     <main
       ref={mainElem}
-      className="relative h-0 grow-[1] w-[98%] sm:w-[95%] mx-auto rounded-lg overflow-auto flex flex-col gap-y-5 items-center justify-center pb-2"
+      className="relative h-0 grow-[1] w-[98%] sm:w-[95%] mx-auto rounded-lg overflow-hidden flex flex-col items-center justify-center"
     >
       <video
         ref={bgVideoElem}
@@ -104,7 +118,7 @@ export default function ViewNewVideo() {
         autoPlay
         loop
         muted
-        className="invisible absolute w-full h-full mt-2 rounded-lg"
+        className="invisible absolute rounded-lg"
       />
 
       <video
@@ -112,6 +126,7 @@ export default function ViewNewVideo() {
         src=""
         autoPlay
         loop
+        muted
         className="invisible absolute w-full h-full rounded-lg"
       />
 
