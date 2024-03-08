@@ -126,7 +126,6 @@ export default function ViewNewVideo() {
         src=""
         autoPlay
         loop
-        muted
         className="invisible absolute w-full h-full rounded-lg"
       />
 
