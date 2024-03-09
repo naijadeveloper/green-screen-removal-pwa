@@ -105,7 +105,7 @@ export default function App() {
         <div className="w-full max-w-sm px-2">
           <div className="mb-2 flex justify-between items-center">
             <span className="text-sm font-medium">
-              Background replacement <sup>(required)</sup>
+              Background replacement video <sup>(required)</sup>
             </span>
           </div>
           <div className="flex items-center">
