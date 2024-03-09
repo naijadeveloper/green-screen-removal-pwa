@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.tsx";
 import About from "./About.tsx";
+import Camera from "./camera.tsx";
 import ViewNewVideo from "./view_new_vid.tsx";
 import DownloadUpdate from "./components/download_update.tsx";
 import Error from "./Error.tsx";
@@ -18,6 +19,12 @@ const router = createBrowserRouter([
   {
     path: "/about",
     element: <About />,
+    errorElement: <Error />,
+  },
+
+  {
+    path: "/camera",
+    element: <Camera />,
     errorElement: <Error />,
   },
 

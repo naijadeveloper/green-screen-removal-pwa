@@ -101,11 +101,15 @@ export default function ViewNewVideo() {
       requestAnimationFrame(bgFrame);
     }
 
+    // resets
     return () => {
       bgVideoElem.current?.removeEventListener("play", () => {});
       gSVideoElem.current?.removeEventListener("play", () => {});
+
+      bgVideoElem.current!.srcObject = null;
+      gSVideoElem.current!.srcObject = null;
     };
-  });
+  }, []);
 
   return (
     <main
