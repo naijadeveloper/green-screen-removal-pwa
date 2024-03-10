@@ -54,6 +54,18 @@ export default function Camera() {
       // redefine width and height
       width = placeholderVideo.current!.offsetWidth;
       height = placeholderVideo.current!.offsetHeight;
+
+      bgCanvas.setAttribute("width", String(width));
+      bgCanvas.setAttribute("height", String(height));
+
+      canvas.current!.setAttribute("width", String(width));
+      canvas.current!.setAttribute("height", String(height));
+
+      console.log(
+        `offset width of vid ${width} and offset height of vid ${height}. Now width of canvas ${canvas.current?.getAttribute(
+          "width"
+        )} and height of canvas ${canvas.current?.getAttribute("height")}.`
+      );
       frame();
     });
 
@@ -75,12 +87,6 @@ export default function Camera() {
         placeholderVideo.current!.onloadedmetadata = () => {
           placeholderVideo.current!.play();
           bgVideoElem.current!.play();
-
-          bgCanvas.setAttribute("width", String(width));
-          bgCanvas.setAttribute("height", String(height));
-
-          canvas.current!.setAttribute("width", String(width));
-          canvas.current!.setAttribute("height", String(height));
         };
       })
       .catch((err) => {
@@ -105,7 +111,7 @@ export default function Camera() {
         let g = vidData?.data[i + 1]!; // green
         let b = vidData?.data[i + 2]!; // blue
 
-        if (r < 80 && g >= 100 && g <= 190 && b < 80) {
+        if (g >= r + 50 && g >= b + 50) {
           // vidData!.data[i + 3] = 0;
           vidData!.data[i] = vidData2!.data[i]; // r
           vidData!.data[i + 1] = vidData2!.data[i + 1]; // g
@@ -128,9 +134,6 @@ export default function Camera() {
     return () => {
       bgVideoElem.current?.removeEventListener("play", () => {});
       placeholderVideo.current?.removeEventListener("play", () => {});
-
-      bgVideoElem.current!.srcObject = null;
-      placeholderVideo.current!.srcObject = null;
     };
   }, [cameraFace]);
 

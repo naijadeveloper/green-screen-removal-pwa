@@ -36,7 +36,6 @@ export default function ViewNewVideo() {
     // width and height for both bgVido and gSVideo
     let width = gSVideoElem.current!.offsetWidth;
     let height = gSVideoElem.current!.offsetHeight;
-    console.log(width, height);
 
     // new canvas
     const bgCanvas = document.createElement("canvas");
@@ -81,7 +80,7 @@ export default function ViewNewVideo() {
         let g = vidData?.data[i + 1]!; // green
         let b = vidData?.data[i + 2]!; // blue
 
-        if (r < 80 && g >= 100 && g <= 190 && b < 80) {
+        if (g >= r + 50 && g >= b + 50) {
           // vidData!.data[i + 3] = 0;
           vidData!.data[i] = vidData2!.data[i]; // r
           vidData!.data[i + 1] = vidData2!.data[i + 1]; // g
@@ -105,9 +104,6 @@ export default function ViewNewVideo() {
     return () => {
       bgVideoElem.current?.removeEventListener("play", () => {});
       gSVideoElem.current?.removeEventListener("play", () => {});
-
-      bgVideoElem.current!.srcObject = null;
-      gSVideoElem.current!.srcObject = null;
     };
   }, []);
 
