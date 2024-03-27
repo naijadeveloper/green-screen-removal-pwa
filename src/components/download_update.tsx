@@ -1,4 +1,5 @@
 import { useRegisterSW } from "virtual:pwa-register/react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog";
 
 export default function DownloadUpdate() {
   const {
@@ -10,40 +11,35 @@ export default function DownloadUpdate() {
     setNeedRefresh(false);
   };
 
-  if (!needRefresh) {
-    return <></>;
-  }
-
   return (
-    <div className="z-40 fixed top-0 left-0 w-full h-full bg-neutral-800/50 flex items-center justify-center">
-      <div className="w-[90%] max-w-[400px] min-h-[100px] rounded-lg bg-neutral-700 flex flex-col items-center text-neutral-200 border-2 border-neutral-900 shadow-2xl">
-        <p className="grow-[1] flex items-center justify-center text-center font-semibold text-lg">
-          <span>
-            A new update of{" "}
-            <span className="group relative underline decoration-4 underline-offset-4 decoration-[#9F8C76]/70 cursor-pointer">
-              <span className="hidden text-sm absolute w-[250px] -top-6 py-1 rounded-lg shadow-2xl bg-neutral-900 group-hover:block">
-                Green Screen Removal App
-              </span>
-              <span>GSR</span>
-            </span>{" "}
-            is available
-          </span>
-        </p>
-        <div className="w-full grow-[1] flex">
+    <Dialog open={needRefresh} onOpenChange={setNeedRefresh}>
+      <DialogContent className="w-[90%] max-w-[400px] min-h-[100px] flex flex-col items-center p-0 select-none">
+        <DialogHeader className="grow-[1] py-3">
+          <DialogTitle className="text-xl">
+            <span>
+              A new update of{" "}
+              <span className="underline decoration-4 underline-offset-4 decoration-primary/70">
+                GSR
+              </span>{" "}
+              is available
+            </span>
+          </DialogTitle>
+        </DialogHeader>
+        <div className="grow-[1] w-full flex">
           <button
             onClick={() => updateServiceWorker(true)}
-            className="grow-[1] flex items-center justify-center bg-[#9F8C76]/90 hover:bg-[#9F8C76]/70 rounded-bl-md"
+            className="grow-[1] flex items-center justify-center bg-primary/90 hover:bg-primary/70 rounded-bl-md p-3 outline-none focus:ring-0 focus:outline-none"
           >
             Install
           </button>
           <button
             onClick={() => close()}
-            className="grow-[1] flex items-center justify-center bg-neutral-800 hover:bg-neutral-800/70 rounded-br-md"
+            className="grow-[1] flex items-center justify-center bg-neutral-700 hover:bg-neutral-700/70 rounded-br-md p-3"
           >
             Not now
           </button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

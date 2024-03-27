@@ -5,23 +5,47 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --primary: 135 116 94;
+    --primary-foreground: 229 229 229;
+  }
+
+  .green {
+    --primary: 21 128 61;
+    --primary-foreground: 229 229 229;
+  }
+
   *::-webkit-scrollbar {
     width: 10px;
     height: 10px;
   }
 
   *::-webkit-scrollbar-thumb {
-    @apply rounded-md bg-gray-500;
+    @apply rounded-md bg-neutral-500;
     border-top-width: 3px;
     border-bottom-width: 3px;
     border: 1px solid #111827;
   }
 
   *::-webkit-scrollbar-track {
-    @apply bg-gray-700 py-1 rounded-lg;
+    @apply bg-neutral-700 py-1 rounded-lg;
   }
 }
 
 body {
   font-family: "Poppins", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+@layer utilities {
+  @keyframes bounce-x {
+    0%,
+    100% {
+      transform: translateX(-10%);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+      transform: translateX(0);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+  }
 }
