@@ -2,14 +2,20 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../zustland/store";
 import { screenRemoval } from "../lib/vmv-route-functions";
-import BottomSheet from "../components/bottom-sheet";
+import RightDrawer from "../components/right-drawer";
 import Tolerance from "../components/tolerance-dropdown";
 
 export default function ViewNewVideo() {
   // navigation
   const navigate = useNavigate();
 
-  // states
+  // ...states
+  // local
+  const [loading, setLoading] = useState(true);
+  const [tolerance, setTolerance] = useState(0);
+  const [indexOfSelectedBgFile, setIndexOfSelectedBgFile] = useState(0);
+
+  // global
   const isCamera = useAppStore((state) => state.isCamera);
   const screenColor = useAppStore((state) => state.screenColor);
   const bgFile = useAppStore((state) => state.bgFile);
@@ -28,37 +34,80 @@ export default function ViewNewVideo() {
         ? "video"
         : "image",
   });
-  const [tolerance, setTolerance] = useState(50);
-  const [indexOfSelectedBgFile, setIndexOfSelectedBgFile] = useState(0);
 
   // refs
   const bgFileElem = useRef<HTMLVideoElement | HTMLImageElement>(null);
   const screenFileElem = useRef<HTMLVideoElement | HTMLImageElement>(null);
   const mainElem = useRef<HTMLElement>(null);
-  const bgCanvas = useRef<HTMLCanvasElement>(null);
-  const canvas = useRef<HTMLCanvasElement>(null);
 
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
   function handleBgSelection(index: number) {
     setIndexOfSelectedBgFile(() => index);
 
-    // release from memory, previous file url
-    URL.revokeObjectURL(bgFileObj.url);
-
     // get file from bgFile
     let file = bgFile![index];
+
+    // reset the bgFileObj
     setBgFileObj(() => ({
       url: URL.createObjectURL(file),
       fileType: file.type.toLowerCase().includes("video") ? "video" : "image",
     }));
   }
 
-  // main useEffect
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
+  function handleImageDownload() {
+    const canvas = document.querySelector("#screencanvas") as HTMLCanvasElement;
+    const pngDataUrl = canvas!.toDataURL("image/png");
+
+    // create anchor tag
+    const download = document.createElement("a") as HTMLAnchorElement;
+    download.classList.add("invisible", "absolute");
+    download.download = "gsr-image.png";
+    download.href = pngDataUrl;
+
+    // append to parent
+    mainElem.current!.append(download);
+
+    // trigger click
+    download.click();
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
+    // loading
+    setLoading(true);
+
     // navigate away from page, if any of these is missing
     if (isCamera || !bgFile || bgFile.length == 0 || !screenFile) {
       navigate("/");
       return;
     }
+
+    // remove previous screen / background file canvas instances if they exist
+    if (document.querySelector("#screencanvas")) {
+      mainElem.current?.removeChild(document.querySelector("#screencanvas")!);
+    }
+    if (document.querySelector("#bgcanvas")) {
+      mainElem.current?.removeChild(document.querySelector("#bgcanvas")!);
+    }
+
+    // create the screen file canvas and background file canvas
+    const canvas = document.createElement("canvas");
+    canvas.classList.add("absolute", "rounded-lg");
+    canvas.id = "screencanvas";
+
+    const bgCanvas = document.createElement("canvas");
+    bgCanvas.classList.add("absolute", "rounded-lg", "invisible");
+    bgCanvas.id = "bgcanvas";
+
+    // append both to main element parent
+    mainElem.current?.append(canvas!, bgCanvas!);
 
     // call color screen removal fn
     let screenRemovalRes: Record<string, any> = screenRemoval(
@@ -72,39 +121,50 @@ export default function ViewNewVideo() {
       screenColor
     );
 
+    // if the ctx and bgCtx are returned = it worked, so remove set loading to false
+    if (screenRemovalRes.ctx && screenRemovalRes.bgCtx) {
+      setTimeout(() => setLoading(false), 3000);
+    }
+
+    // clean ups, removing the animation frames
     return () => {
-      if (!screenFileElem.current || !bgFileElem.current || !screenRemovalRes) {
+      if (!screenFileElem.current || !bgFileElem.current) {
         return;
       }
 
       // cancel animation frames
-      if (screenRemovalRes.anime1)
+      if (screenRemovalRes.anime1) {
         cancelAnimationFrame(screenRemovalRes.anime1);
-      if (screenRemovalRes.anime2)
+      }
+
+      if (screenRemovalRes.anime2) {
         cancelAnimationFrame(screenRemovalRes.anime2);
-
-      // clear the canvases
-      screenRemovalRes.ctx.clearRect(
-        0,
-        0,
-        canvas.current!.width,
-        canvas.current!.height
-      );
-      screenRemovalRes.bgCtx.clearRect(
-        0,
-        0,
-        canvas.current!.width,
-        canvas.current!.height
-      );
-
-      // remove the source from both elements
-      screenFileElem.current!.removeAttribute("src");
-      bgFileElem.current!.removeAttribute("src");
+      }
     };
   }, [bgFileObj, tolerance]);
 
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
   return (
     <>
+      {screenFile && bgFile && (
+        <button
+          onClick={() => handleImageDownload()}
+          className="relative bg-primary text-primary-foreground px-2 py-1 rounded-md border-b-4 border-neutral-700 hover:border-neutral-800 hover:bg-primary/90"
+        >
+          Save Image
+        </button>
+      )}
+
+      {screenFile && bgFile && loading && (
+        <div className="absolute w-full h-full top-0 left-0 bg-neutral-900 z-50 flex items-center justify-center">
+          <p className="font-bold text-lg bg-neutral-200 px-2">
+            Loading please wait...
+          </p>
+        </div>
+      )}
+
       <main
         ref={mainElem}
         className="relative h-0 grow-[1] w-[98%] sm:w-[95%] mx-auto overflow-hidden rounded-lg flex flex-col items-center justify-center text-neutral-200"
@@ -145,20 +205,17 @@ export default function ViewNewVideo() {
             className="invisible absolute h-full w-full"
           />
         )}
-
-        <canvas ref={bgCanvas} className="invisible absolute"></canvas>
-        <canvas ref={canvas} className="absolute rounded-lg"></canvas>
       </main>
       <div className="flex gap-x-4">
         {bgFile && bgFile!.length > 1 && (
-          <BottomSheet
+          <RightDrawer
             bgFile={bgFile as FileList}
             selection={indexOfSelectedBgFile}
             handleBgSelection={handleBgSelection}
           />
         )}
 
-        <Tolerance tolerance={tolerance} setTolerance={setTolerance} />
+        {bgFile && screenFile && <Tolerance setTolerance={setTolerance} />}
       </div>
     </>
   );

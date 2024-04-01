@@ -58,8 +58,8 @@ export default function HomeRouteDialog() {
         <DialogHeader>
           <DialogTitle className="text-xl">GSR Settings</DialogTitle>
           <DialogDescription className="text-neutral-400">
-            Change the color of screen, the intensity of color, the camera
-            position, e.tc
+            Change the color of screen, the screen / background file type and
+            the camera position.
           </DialogDescription>
         </DialogHeader>
         <div className="divide-y-2 divide-neutral-600/30">

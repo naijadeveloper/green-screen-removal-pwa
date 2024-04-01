@@ -3,8 +3,8 @@ export function screenRemoval(
   bgFObj: { url: string; fileType: string },
   sFElem: React.RefObject<HTMLVideoElement | HTMLImageElement>,
   bgFElem: React.RefObject<HTMLVideoElement | HTMLImageElement>,
-  bgC: React.RefObject<HTMLCanvasElement>,
-  c: React.RefObject<HTMLCanvasElement>,
+  bgCanvas: HTMLCanvasElement,
+  canvas: HTMLCanvasElement,
   tolerance: number,
   screenColor: string
 ) {
@@ -15,12 +15,6 @@ export function screenRemoval(
   // get actual elements from RefObject
   let sE = sFElem.current!;
   let bgE = bgFElem.current!;
-  let bgCanvas = bgC.current!;
-  let canvas = c.current!;
-
-  // remove the src attribute - clean up
-  sE.removeAttribute("src");
-  bgE.removeAttribute("src");
 
   // set the url of the screen file element and bg element
   sE.setAttribute("src", sFObj.url);
@@ -48,17 +42,20 @@ export function screenRemoval(
   // if any is a video the function will fire when the play
   // event if triggered
   bgE.addEventListener("play", bgDraw);
-  sE.addEventListener("play", drawingVideo);
+  sE.addEventListener("play", screenDraw);
 
-  // this runs if its an image
-  if (bgFObj.fileType == "image") {
-    bgDraw();
-  }
+  // runs only for images i.e if the background / screen element is an image
+  // this will run
+  bgE.addEventListener("load", bgDraw);
+  sE.addEventListener("load", screenDraw);
 
-  // same for this
-  if (sFObj.fileType == "image") {
-    drawingImage();
-  }
+  // if (sFObj.fileType == "image") {
+  //   screenDraw();
+  // }
+
+  // if (bgFObj.fileType == "image") {
+  //   bgDraw();
+  // }
 
   /////////////
   function bgDraw() {
@@ -70,29 +67,21 @@ export function screenRemoval(
   }
 
   /////////////
-  function drawingVideo() {
-    height =
-      (canvas.width! / (sE as HTMLVideoElement).videoWidth) *
-      (sE as HTMLVideoElement).videoHeight;
+  function screenDraw() {
+    if (sFObj.fileType == "video") {
+      height =
+        (canvas.width! / (sE as HTMLVideoElement).videoWidth) *
+        (sE as HTMLVideoElement).videoHeight;
+    } else {
+      height = Math.floor(canvas.width * (9 / 16));
+    }
 
     // recalculate height
     canvas.setAttribute("height", String(height));
 
     // draw and loop
     drawingData();
-    anime2 = requestAnimationFrame(drawingVideo);
-  }
-
-  /////////////
-  function drawingImage() {
-    height = Math.floor(canvas.width * (9 / 16));
-
-    // recalculate height
-    canvas.setAttribute("height", String(height));
-
-    // draw and loop
-    drawingData();
-    anime2 = requestAnimationFrame(drawingImage);
+    anime2 = requestAnimationFrame(screenDraw);
   }
 
   /////////////
@@ -124,10 +113,18 @@ export function screenRemoval(
       switch (screenColor) {
         case "red": {
           if (r > g && r > b) {
-            if (r >= g + b + tolerance) {
-              vidData!.data[i] = bgVidData!.data[i];
-              vidData!.data[i + 1] = bgVidData!.data[i + 1];
-              vidData!.data[i + 2] = bgVidData!.data[i + 2];
+            if (tolerance == 0) {
+              if (r >= g + 30 && r >= b + 30) {
+                vidData!.data[i] = bgVidData!.data[i];
+                vidData!.data[i + 1] = bgVidData!.data[i + 1];
+                vidData!.data[i + 2] = bgVidData!.data[i + 2];
+              }
+            } else {
+              if (r >= g + b + tolerance) {
+                vidData!.data[i] = bgVidData!.data[i];
+                vidData!.data[i + 1] = bgVidData!.data[i + 1];
+                vidData!.data[i + 2] = bgVidData!.data[i + 2];
+              }
             }
           }
           break;
@@ -135,21 +132,37 @@ export function screenRemoval(
 
         case "green": {
           if (g > r && g > b) {
-            if (g >= r + b + tolerance) {
-              vidData!.data[i] = bgVidData!.data[i];
-              vidData!.data[i + 1] = bgVidData!.data[i + 1];
-              vidData!.data[i + 2] = bgVidData!.data[i + 2];
+            if (tolerance == 0) {
+              if (g >= r + 30 && g >= b + 30) {
+                vidData!.data[i] = bgVidData!.data[i];
+                vidData!.data[i + 1] = bgVidData!.data[i + 1];
+                vidData!.data[i + 2] = bgVidData!.data[i + 2];
+              }
+            } else {
+              if (g >= r + b + tolerance) {
+                vidData!.data[i] = bgVidData!.data[i];
+                vidData!.data[i + 1] = bgVidData!.data[i + 1];
+                vidData!.data[i + 2] = bgVidData!.data[i + 2];
+              }
             }
           }
           break;
         }
 
         default: {
-          if (b > r && b > g) {
-            if (b >= r + g + tolerance) {
-              vidData!.data[i] = bgVidData!.data[i];
-              vidData!.data[i + 1] = bgVidData!.data[i + 1];
-              vidData!.data[i + 2] = bgVidData!.data[i + 2];
+          if (b > g && b > r) {
+            if (tolerance == 0) {
+              if (b >= g + 30 && b >= r + 30) {
+                vidData!.data[i] = bgVidData!.data[i];
+                vidData!.data[i + 1] = bgVidData!.data[i + 1];
+                vidData!.data[i + 2] = bgVidData!.data[i + 2];
+              }
+            } else {
+              if (b >= g + r + tolerance) {
+                vidData!.data[i] = bgVidData!.data[i];
+                vidData!.data[i + 1] = bgVidData!.data[i + 1];
+                vidData!.data[i + 2] = bgVidData!.data[i + 2];
+              }
             }
           }
         }
