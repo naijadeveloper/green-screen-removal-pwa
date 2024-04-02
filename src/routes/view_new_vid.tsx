@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../zustland/store";
 import { screenRemoval } from "../lib/vmv-route-functions";
 import RightDrawer from "../components/right-drawer";
-import Tolerance from "../components/tolerance-dropdown";
 
 export default function ViewNewVideo() {
   // navigation
@@ -12,7 +11,7 @@ export default function ViewNewVideo() {
   // ...states
   // local
   const [loading, setLoading] = useState(true);
-  const [tolerance, setTolerance] = useState(0);
+  const [showColorScreen, setShowColorScreen] = useState(false);
   const [indexOfSelectedBgFile, setIndexOfSelectedBgFile] = useState(0);
 
   // global
@@ -117,7 +116,7 @@ export default function ViewNewVideo() {
       bgFileElem,
       bgCanvas,
       canvas,
-      tolerance,
+      showColorScreen,
       screenColor
     );
 
@@ -141,7 +140,7 @@ export default function ViewNewVideo() {
         cancelAnimationFrame(screenRemovalRes.anime2);
       }
     };
-  }, [bgFileObj, tolerance]);
+  }, [bgFileObj, showColorScreen]);
 
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
@@ -157,6 +156,7 @@ export default function ViewNewVideo() {
         </button>
       )}
 
+      {/*  */}
       {screenFile && bgFile && loading && (
         <div className="absolute w-full h-full top-0 left-0 bg-neutral-900 z-50 flex items-center justify-center">
           <p className="font-bold text-lg bg-neutral-200 px-2">
@@ -165,6 +165,7 @@ export default function ViewNewVideo() {
         </div>
       )}
 
+      {/*  */}
       <main
         ref={mainElem}
         className="relative h-0 grow-[1] w-[98%] sm:w-[95%] mx-auto overflow-hidden rounded-lg flex flex-col items-center justify-center text-neutral-200"
@@ -206,6 +207,8 @@ export default function ViewNewVideo() {
           />
         )}
       </main>
+
+      {/*  */}
       <div className="flex gap-x-4">
         {bgFile && bgFile!.length > 1 && (
           <RightDrawer
@@ -215,7 +218,39 @@ export default function ViewNewVideo() {
           />
         )}
 
-        {bgFile && screenFile && <Tolerance setTolerance={setTolerance} />}
+        {/*  */}
+        {bgFile && screenFile && (
+          <label
+            htmlFor="show-color-screen"
+            className="flex gap-x-2 sm:items-center cursor-pointer text-neutral-200 bg-neutral-700 px-2 py-1 rounded-md"
+          >
+            <input
+              onChange={() => setShowColorScreen(!showColorScreen)}
+              checked={showColorScreen}
+              id="show-color-screen"
+              type="checkbox"
+              className="peer relative appearance-none w-5 h-5 bg-neutral-800 border border-neutral-600 rounded-md shrink-0 checked:bg-primary checked:border-0 outline-none focus:outline-none max-[404px]:mt-[2px]"
+            />
+
+            <span className="text-sm font-medium">
+              {showColorScreen && "See after"}
+              {!showColorScreen && "See before"}
+            </span>
+
+            <svg
+              className="absolute w-5 h-5 pointer-events-none hidden peer-checked:block text-primary-foreground max-[404px]:mt-[2px]"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </label>
+        )}
       </div>
     </>
   );

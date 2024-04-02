@@ -28,13 +28,13 @@ export default function DownloadUpdate() {
         <div className="grow-[1] w-full flex">
           <button
             onClick={() => updateServiceWorker(true)}
-            className="grow-[1] flex items-center justify-center bg-primary/90 hover:bg-primary/70 rounded-bl-md p-3 outline-none focus:ring-0 focus:outline-none"
+            className="grow-[1] w-full flex items-center justify-center bg-primary/90 hover:bg-primary/70 rounded-bl-md p-3 outline-none focus:ring-0 focus:outline-none"
           >
             Install
           </button>
           <button
             onClick={() => close()}
-            className="grow-[1] flex items-center justify-center bg-neutral-700 hover:bg-neutral-700/70 rounded-br-md p-3"
+            className="grow-[1] w-full flex items-center justify-center bg-neutral-700 hover:bg-neutral-700/70 rounded-br-md p-3"
           >
             Not now
           </button>

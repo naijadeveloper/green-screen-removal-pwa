@@ -5,7 +5,7 @@ export function screenRemoval(
   bgFElem: React.RefObject<HTMLVideoElement | HTMLImageElement>,
   bgCanvas: HTMLCanvasElement,
   canvas: HTMLCanvasElement,
-  tolerance: number,
+  showColorScreen: boolean,
   screenColor: string
 ) {
   // animation frame id
@@ -88,6 +88,10 @@ export function screenRemoval(
   function drawingData() {
     ctx?.drawImage(sE, 0, 0, width, height);
 
+    if (showColorScreen) {
+      return;
+    }
+
     // get image data
     let vidData = ctx?.getImageData(
       0,
@@ -112,58 +116,28 @@ export function screenRemoval(
 
       switch (screenColor) {
         case "red": {
-          if (r > g && r > b) {
-            if (tolerance == 0) {
-              if (r >= g + 30 && r >= b + 30) {
-                vidData!.data[i] = bgVidData!.data[i];
-                vidData!.data[i + 1] = bgVidData!.data[i + 1];
-                vidData!.data[i + 2] = bgVidData!.data[i + 2];
-              }
-            } else {
-              if (r >= g + b + tolerance) {
-                vidData!.data[i] = bgVidData!.data[i];
-                vidData!.data[i + 1] = bgVidData!.data[i + 1];
-                vidData!.data[i + 2] = bgVidData!.data[i + 2];
-              }
-            }
+          if (r >= g + 30 && r >= b + 30) {
+            vidData!.data[i] = bgVidData!.data[i];
+            vidData!.data[i + 1] = bgVidData!.data[i + 1];
+            vidData!.data[i + 2] = bgVidData!.data[i + 2];
           }
           break;
         }
 
         case "green": {
-          if (g > r && g > b) {
-            if (tolerance == 0) {
-              if (g >= r + 30 && g >= b + 30) {
-                vidData!.data[i] = bgVidData!.data[i];
-                vidData!.data[i + 1] = bgVidData!.data[i + 1];
-                vidData!.data[i + 2] = bgVidData!.data[i + 2];
-              }
-            } else {
-              if (g >= r + b + tolerance) {
-                vidData!.data[i] = bgVidData!.data[i];
-                vidData!.data[i + 1] = bgVidData!.data[i + 1];
-                vidData!.data[i + 2] = bgVidData!.data[i + 2];
-              }
-            }
+          if (g >= r + 30 && g >= b + 30) {
+            vidData!.data[i] = bgVidData!.data[i];
+            vidData!.data[i + 1] = bgVidData!.data[i + 1];
+            vidData!.data[i + 2] = bgVidData!.data[i + 2];
           }
           break;
         }
 
         default: {
-          if (b > g && b > r) {
-            if (tolerance == 0) {
-              if (b >= g + 30 && b >= r + 30) {
-                vidData!.data[i] = bgVidData!.data[i];
-                vidData!.data[i + 1] = bgVidData!.data[i + 1];
-                vidData!.data[i + 2] = bgVidData!.data[i + 2];
-              }
-            } else {
-              if (b >= g + r + tolerance) {
-                vidData!.data[i] = bgVidData!.data[i];
-                vidData!.data[i + 1] = bgVidData!.data[i + 1];
-                vidData!.data[i + 2] = bgVidData!.data[i + 2];
-              }
-            }
+          if (b >= g + 30 && b >= r + 30) {
+            vidData!.data[i] = bgVidData!.data[i];
+            vidData!.data[i + 1] = bgVidData!.data[i + 1];
+            vidData!.data[i + 2] = bgVidData!.data[i + 2];
           }
         }
       }

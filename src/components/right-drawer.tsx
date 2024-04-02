@@ -37,11 +37,11 @@ const RightDrawer = ({
                 <button
                   key={index}
                   onClick={() => {
-                    if (selection == index) {
+                    if (selection != index) {
                       handleBgSelection(index);
                     }
                   }}
-                  className={cn("relative border-0 border-primary rounded-lg", {
+                  className={cn("relative border-0 border-primary rounded", {
                     "border-4": selection == index,
                   })}
                 >
@@ -49,7 +49,7 @@ const RightDrawer = ({
                     src={url}
                     aria-label={file.name}
                     muted
-                    className="bottom-sheet-vid w-full rounded"
+                    className="bottom-sheet-vid w-full h-[200px] object-cover rounded-sm"
                   />
                   <div className="absolute top-0 left-0 w-full h-full z-20 flex flex-col items-center justify-center gap-2 px-2 bg-neutral-800/50">
                     <span className="text-xs">{file.name}</span>
@@ -59,12 +59,12 @@ const RightDrawer = ({
             } else {
               return (
                 <button
+                  key={index}
                   onClick={() => {
-                    if (selection == index) {
+                    if (selection != index) {
                       handleBgSelection(index);
                     }
                   }}
-                  key={index}
                   className={cn("relative border-0 border-primary rounded-lg", {
                     "border-4": selection == index,
                   })}
@@ -73,7 +73,7 @@ const RightDrawer = ({
                     key={index}
                     src={url}
                     alt={file.name}
-                    className="w-full rounded"
+                    className="w-full h-[200px] object-cover rounded-sm"
                   />
                   <div className="absolute top-0 left-0 w-full h-full z-20 flex flex-col items-center justify-center gap-2 px-2 bg-neutral-800/50">
                     <span className="text-xs">{file.name}</span>
