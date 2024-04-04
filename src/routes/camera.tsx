@@ -127,12 +127,10 @@ export default function Camera() {
     return () => {
       // cancel animation frames
       if (animes && animes[0] > 0) {
-        console.log("the first anime: ", animes[0]);
         cancelAnimationFrame(animes[0]);
       }
 
       if (animes && animes[1] > 0) {
-        console.log("the second anime: ", animes[1]);
         cancelAnimationFrame(animes[1]);
       }
     };
