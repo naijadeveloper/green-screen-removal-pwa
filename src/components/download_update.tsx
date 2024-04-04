@@ -13,8 +13,8 @@ export default function DownloadUpdate() {
 
   return (
     <Dialog open={needRefresh} onOpenChange={setNeedRefresh}>
-      <DialogContent className="w-[90%] max-w-[400px] min-h-[100px] flex flex-col items-center p-0 select-none">
-        <DialogHeader className="grow-[1] py-3">
+      <DialogContent className="w-[90%] max-w-[400px] min-h-[100px] flex flex-col items-center p-0 max-sm:px-0 select-none">
+        <DialogHeader className="grow-[1] py-3 max-sm:px-3">
           <DialogTitle className="text-xl">
             <span>
               A new update of{" "}

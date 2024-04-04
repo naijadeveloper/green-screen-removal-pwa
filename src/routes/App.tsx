@@ -134,9 +134,9 @@ export default function App() {
 
     // if bgvideo and camera is true
     // open "/camera"
-    // if (bgFile && isCamera == true) {
-    //   navigate("/camera");
-    // }
+    if (bgFile && isCamera == true) {
+      navigate("/camera");
+    }
 
     // if isCamera is false and both bgFile and screenFile are true
     // open "/view-new-vid"

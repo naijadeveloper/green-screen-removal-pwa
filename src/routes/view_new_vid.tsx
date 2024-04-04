@@ -4,6 +4,9 @@ import { useAppStore } from "../zustland/store";
 import { screenRemoval } from "../lib/vmv-route-functions";
 import RightDrawer from "../components/right-drawer";
 
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
 export default function ViewNewVideo() {
   // navigation
   const navigate = useNavigate();
@@ -122,12 +125,12 @@ export default function ViewNewVideo() {
 
     // if the ctx and bgCtx are returned = it worked, so remove set loading to false
     if (screenRemovalRes.ctx && screenRemovalRes.bgCtx) {
-      setTimeout(() => setLoading(false), 3000);
+      setTimeout(() => setLoading(false), 2000);
     }
 
     // clean ups, removing the animation frames
     return () => {
-      if (!screenFileElem.current || !bgFileElem.current) {
+      if (!screenFile || !bgFile) {
         return;
       }
 
