@@ -28,12 +28,13 @@ export function screenRemoval(
   // set play event for background element and stream video element
   // if bg Element is a video, it's play event will fire
   bgE.addEventListener("play", () => {
-    let checkDimen = setInterval(() => {
-      if (width && height) {
-        clearInterval(checkDimen);
-        bgDraw();
-      }
-    }, 500);
+    // define the width and height here
+    width = bgE.offsetWidth;
+    height = bgE.offsetHeight;
+
+    bgCanvas.setAttribute("width", String(width));
+    bgCanvas.setAttribute("height", String(height));
+    bgDraw();
   });
 
   sE.addEventListener("play", () => {
@@ -55,14 +56,15 @@ export function screenRemoval(
     streamVideoDraw();
   });
 
-  // the load event fires instead if an image
+  // the load event fires instead, if an image
   bgE.addEventListener("load", () => {
-    let checkDimen = setInterval(() => {
-      if (width && height) {
-        clearInterval(checkDimen);
-        bgDraw();
-      }
-    }, 500);
+    // define the width and height here
+    width = bgE.offsetWidth;
+    height = bgE.offsetHeight;
+
+    bgCanvas.setAttribute("width", String(width));
+    bgCanvas.setAttribute("height", String(height));
+    bgDraw();
   });
 
   //////////////////////////////////////////////////////////////////////////////
@@ -97,6 +99,8 @@ export function screenRemoval(
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   function bgDraw() {
+    bgCanvas.setAttribute("height", String(height));
+
     bgCtx?.drawImage(bgE, 0, 0, width, height);
 
     let anime = requestAnimationFrame(bgDraw);
@@ -120,7 +124,6 @@ export function screenRemoval(
 
     // recalculate height
     canvas.setAttribute("height", String(height));
-    bgCanvas.setAttribute("height", String(height));
 
     // draw and loop
     drawingData();
